@@ -1,5 +1,5 @@
 import express, { json } from "express";
-/* Routes */
+import { dollarRatesRouter } from "./routes/dollarRates.js";
 import { corsMiddleware } from "./middlewares/cors.js";
 import { PORT } from "./config.js";
 
@@ -8,9 +8,7 @@ app.use(json());
 app.use(corsMiddleware());
 app.disable("x-powered-by");
 
-app.use("/bcv", (req, res) => {
-  res.send("Hola, todavia no tengo la tasa del bcv");
-});
+app.use("/dollarRates", dollarRatesRouter);
 
 app.listen(PORT, () => {
   console.log(`server listening on port http://localhost:${PORT}`);

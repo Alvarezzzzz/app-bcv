@@ -9,3 +9,8 @@ CREATE TABLE tasaDolar (
   fecha_consulta TIMESTAMP NOT NULL DEFAULT (now()),
   PRIMARY KEY (id)
 );
+
+INSERT INTO tasaDolar (tasa, fecha_validez) VALUES (37.4521, '2025-06-16');
+INSERT INTO tasaDolar (tasa, fecha_validez) VALUES (37.4892, '2025-06-17');
+INSERT INTO tasaDolar (tasa, fecha_validez) VALUES (37.5210, '2025-06-18');
+
