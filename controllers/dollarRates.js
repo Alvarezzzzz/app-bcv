@@ -1,5 +1,5 @@
 import { DollarRateModel } from "../models/dollarRate.js";
-/* Importamos las validaciones */
+import { validateDateOrRange } from "../schemas/dollarRates.js";
 import getInfoBCV from "../utils/getDollarBCV.js";
 
 export class DollarRateController {
@@ -11,14 +11,24 @@ export class DollarRateController {
   }
 
   static async getHistory(req, res) {
-    const dolarRate = await DollarRateModel.getHistory();
-    res.json(dolarRate);
+    const { dolarRates, success } = await DollarRateModel.getHistory();
+    if (!success) return res.status(500).json({ message: "Server error" });
+    if (!dolarRates) return res.status(404).json({ message: "Not found" });
+    res.json(dolarRates);
   }
 
   static async getRange(req, res) {
     const { range } = req.query;
-    /* Hay que validar el range */
-    const dolarRates = await DollarRateModel.getRange({ range });
+    const resul = validateDateOrRange(range);
+    if (!resul.success) return res.status(400).json(resul.error);
+    const [date1, date2] = resul.data.split("to");
+    const { dolarRates, success } = await DollarRateModel.getRange({
+      date1,
+      date2,
+    });
+
+    if (!success) return res.status(500).json({ message: "Server error" });
+    if (!dolarRates) return res.status(404).json({ message: "Not found" });
     res.json(dolarRates);
   }
 
