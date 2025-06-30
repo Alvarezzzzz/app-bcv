@@ -23,7 +23,7 @@ export class DollarRateController {
     const { range } = req.query;
     const resul = validateDateOrRange(range);
     if (!resul.success) return res.status(400).json(resul.error);
-    const [date1, date2] = resul.data.split("to");
+    const [date1, date2] = resul.data.split("-to-");
     const { dolarRates, success } = await DollarRateModel.getRange({
       date1,
       date2,

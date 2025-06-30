@@ -61,7 +61,7 @@ export class DollarRateModel {
         JOIN (
             SELECT fecha_validez, MAX(fecha_consulta) AS max_fecha_consulta
             FROM tasaDolar
-            WHERE fecha_validez BETWEEN '2025-06-18' AND '2025-06-30'
+            WHERE fecha_validez BETWEEN ? AND ?
             GROUP BY fecha_validez
         ) latest
         ON td.fecha_validez = latest.fecha_validez
