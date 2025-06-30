@@ -1,6 +1,8 @@
 import { DollarRateModel } from "../models/dollarRate.js";
 import { validateDateOrRange } from "../schemas/dollarRates.js";
+import getDate from "../utils/getDate.js";
 import getInfoBCV from "../utils/getDollarBCV.js";
+import getRate from "../utils/getRate.js";
 
 export class DollarRateController {
   static async getToday(req, res) {
@@ -33,8 +35,17 @@ export class DollarRateController {
   }
 
   static async create(req, res) {
-    const { tasa, fecha } = await getInfoBCV();
-    const dolarRate = await DollarRateModel.create({ tasa, fecha });
+    const {
+      dolarBCV: { tasa, fecha },
+    } = await getInfoBCV();
+    const parsedDate = getDate(fecha);
+    const parseRate = getRate(tasa);
+    const { dolarRate, success } = await DollarRateModel.create({
+      rate: parseRate,
+      date: parsedDate,
+    });
+    if (!success) return res.status(500).json({ message: "Server error" });
+    if (!dolarRate) return res.status(404).json({ message: "Not found" });
     res.json(dolarRate);
   }
 }

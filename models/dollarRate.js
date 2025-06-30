@@ -77,4 +77,21 @@ export class DollarRateModel {
       }
     }
   }
+
+  static async create({ rate, date }) {
+    try {
+      const [dolarRate] = await connection.query(
+        "INSERT INTO tasaDolar (tasa, fecha_validez) VALUES (?, ?);",
+        [rate, date]
+      );
+      const [createdDolarRate] = await connection.query(
+        "select tasa, fecha_validez, fecha_consulta from tasaDolar where fecha_validez = ? ORDER BY fecha_consulta DESC LIMIT 1;",
+        [date]
+      );
+      return { dolarRate: createdDolarRate[0], success: true };
+    } catch (error) {
+      console.log(error);
+      return { success: false };
+    }
+  }
 }
