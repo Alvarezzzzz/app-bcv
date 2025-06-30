@@ -1,0 +1,11 @@
+DROP DATABASE IF EXISTS bcv; 
+CREATE DATABASE bcv;
+USE bcv;
+
+CREATE TABLE tasaDolar (
+  id INT NOT NULL AUTO_INCREMENT,
+  tasa DECIMAL(10,4) NOT NULL,
+  fecha_validez DATE NOT NULL,
+  fecha_consulta TIMESTAMP NOT NULL DEFAULT (now()),
+  PRIMARY KEY (id)
+);
