@@ -302,7 +302,7 @@ async function convertCurrency() {
     if (!rateData) {
       // Mostrar la tasa usada
       elements.historicalRateValue.textContent = "Sin tasa para esta fecha:";
-      elements.historicalRateDate.textContent = formatDate(conversionDate);
+      elements.historicalRateDate.textContent = conversionDate;
       elements.historicalRateDisplay.style.display = "block";
       return;
     }
