@@ -7,7 +7,7 @@ export class DollarRateModel {
   static async getToday() {
     try {
       const [dolarRate] = await connection.query(
-        "select tasa, fecha_validez, fecha_consulta from tasaDolar where fecha_validez = CURDATE() ORDER BY fecha_consulta DESC LIMIT 1;"
+        "SELECT tasa, fecha_validez, fecha_consulta FROM tasaDolar ORDER BY fecha_validez DESC, fecha_consulta DESC LIMIT 1;"
       );
       return { dolarRate: dolarRate[0], success: true };
     } catch (error) {
@@ -22,14 +22,7 @@ export class DollarRateModel {
         `
         SELECT td.tasa, td.fecha_validez, td.fecha_consulta
         FROM tasaDolar td
-        JOIN (
-            SELECT fecha_validez, MAX(fecha_consulta) AS max_fecha_consulta
-            FROM tasaDolar
-            GROUP BY fecha_validez
-        ) ultimas
-        ON td.fecha_validez = ultimas.fecha_validez
-        AND td.fecha_consulta = ultimas.max_fecha_consulta
-        ORDER BY td.fecha_validez DESC;
+        ORDER BY td.fecha_validez DESC, td.fecha_consulta DESC;
         `
       );
       return { dolarRates: dolarRates, success: true };
