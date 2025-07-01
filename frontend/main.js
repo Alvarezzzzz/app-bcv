@@ -4,28 +4,37 @@ const API_BASE_URL = "http://localhost:3000";
 // elementos utilizados del dom
 const elements = {
   refreshBtn: document.getElementById("refresh-btn"),
+
+  // Cuadro principal de tasa actual
   rateValue: document.getElementById("rate-value"),
-  rateCurrency: document.getElementById("rate-currency"),
-  consultaFecha: document.getElementById("consulta-fecha"),
-  validezFecha: document.getElementById("validez-fecha"),
-  variation: document.getElementById("variation"),
+  consultaFechaValue: document.getElementById("consulta-fecha"),
+  validezFechaValue: document.getElementById("validez-fecha"),
+  variationValue: document.getElementById("variation"),
+
+  // Tabla de los ultimos 30 registros
   lastRates: document.getElementById("last-rates"),
+
+  // Seccion de conversion
   amountInput: document.getElementById("amount"),
   fromCurrency: document.getElementById("from-currency"),
   toCurrency: document.getElementById("to-currency"),
   convertedAmount: document.getElementById("converted-amount"),
   convertBtn: document.getElementById("convert-btn"),
   conversionDate: document.getElementById("conversion-date"),
+  historicalRateDisplay: document.getElementById("historical-rate-display"),
+  historicalRateValue: document.getElementById("historical-rate-value"),
+  historicalRateDate: document.getElementById("historical-rate-date"),
+
+  // Seccion de historico por rango o por fecha unica
   startDate: document.getElementById("start-date"),
   endDate: document.getElementById("end-date"),
   searchBtn: document.getElementById("search-btn"),
   historyTable: document.getElementById("history-table"),
   historyBodyForRange: document.getElementById("history-body"),
   noData: document.getElementById("no-data"),
+
+  // Notificaciones
   notificationArea: document.getElementById("notification-area"),
-  historicalRateDisplay: document.getElementById("historical-rate-display"),
-  historicalRateValue: document.getElementById("historical-rate-value"),
-  historicalRateDate: document.getElementById("historical-rate-date"),
 };
 
 // Variables globales donde se almacenarán las tasas de la ultima consulta y la actual
@@ -33,7 +42,6 @@ let currentRate = 0;
 let previousRate = 0;
 
 /* Funciones de utilidad */
-
 // Funcion que convierte una fecha en formato "YYYY-MM-DD" a "DD de mes de YYYY"
 function formatDate(dateString) {
   if (!dateString) return "";
@@ -142,17 +150,19 @@ async function loadCurrentRate() {
     // Actualizar la interfaz con la nueva tasa
     currentRate = parseFloat(data.tasa);
     elements.rateValue.textContent = formatCurrency(data.tasa);
-    elements.consultaFecha.textContent = formatDateTime(data.fecha_consulta);
-    elements.validezFecha.textContent = formatDate(data.fecha_validez);
+    elements.consultaFechaValue.textContent = formatDateTime(
+      data.fecha_consulta
+    );
+    elements.validezFechaValue.textContent = formatDate(data.fecha_validez);
 
     // Calcular variación y la mostramos en la interfaz
     if (previousRate && previousRate > 0) {
       const variation = calculateVariation(currentRate, previousRate);
       const formattedVariation = formatVariation(variation);
-      elements.variation.textContent = `${
+      elements.variationValue.textContent = `${
         variation >= 0 ? "+" : ""
       }${formattedVariation}%`;
-      elements.variation.className = `variation ${
+      elements.variationValue.className = `variation ${
         variation >= 0 ? "positive" : "negative"
       }`;
     }
@@ -193,10 +203,10 @@ async function loadLastRates() {
       if (currentRate > 0) {
         const variation = calculateVariation(currentRate, previousRate);
         const formattedVariation = formatVariation(variation);
-        elements.variation.textContent = `${
+        elements.variationValue.textContent = `${
           variation >= 0 ? "+" : ""
         }${formattedVariation}%`;
-        elements.variation.className = `variation ${
+        elements.variationValue.className = `variation ${
           variation >= 0 ? "positive" : "negative"
         }`;
       }
@@ -378,8 +388,10 @@ elements.refreshBtn.addEventListener("click", async () => {
     // Actualizar la interfaz con la nueva tasa
     currentRate = parseFloat(data.tasa);
     elements.rateValue.textContent = formatCurrency(data.tasa);
-    elements.consultaFecha.textContent = formatDateTime(data.fecha_consulta);
-    elements.validezFecha.textContent = formatDate(data.fecha_validez);
+    elements.consultaFechaValue.textContent = formatDateTime(
+      data.fecha_consulta
+    );
+    elements.validezFechaValue.textContent = formatDate(data.fecha_validez);
 
     // Recargar los últimos registros para obtener tasa anterior
     await loadLastRates();
