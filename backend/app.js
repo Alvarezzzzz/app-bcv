@@ -16,4 +16,5 @@ app.listen(PORT, () => {
   console.log(`server listening on port http://localhost:${PORT}`);
 });
 
+/* Cada dia a las 6pm se actualiza la tasa diaria */
 cron.schedule("0 18 * * *", () => setDailyDollar());
