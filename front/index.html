@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCV Scrapper - Tasas de Cambio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-coins fa-2x"></i>
+                <h1>BCV Scrapper</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#current" class="active">Tasa Actual</a></li>
+                    <li><a href="#converter">Conversor</a></li>
+                    <li><a href="#history">Histórico</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Sección de Tasa Actual -->
+        <section id="current" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Tasa Actual del Dólar</h2>
+                <button id="refresh-btn" class="btn btn-refresh">
+                    <i class="fas fa-sync-alt"></i> Actualizar Tasa
+                </button>
+            </div>
+            
+            <div id="notification-area"></div>
+            
+            <div class="card current-rate">
+                <div class="rate-display">
+                    <div class="rate-title">TASA OFICIAL DEL <strong>DÓLAR</strong> BCV</div>
+                    <div id="rate-value" class="rate-value">108.1891</div>
+                    <div id="rate-currency" class="rate-currency">VES</div>
+                    
+                    <div class="rate-info">
+                        <p>
+                            <span class="info-label">Variación:</span>
+                            <span id="variation" class="variation positive">+0.52%</span>
+                        </p>
+                        <p>
+                            <span class="info-label">Consultado:</span>
+                            <span id="consulta-fecha" class="info-value">30 de junio de 2025 11:14:47</span>
+                        </p>
+                        <p>
+                            <span class="info-label">Día de validez:</span>
+                            <span id="validez-fecha" class="info-value">01 de julio de 2025</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Últimos Registros (30 días)</h3>
+                    <div class="scrollable-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Fecha Validez</th>
+                                    <th>Fecha Consulta</th>
+                                    <th>Tasa (VED/USD)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="last-rates">
+                                <!-- Datos dinámicos -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Conversor -->
+        <section id="converter" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Conversor de Moneda</h2>
+            </div>
+            
+            <div class="card">
+                <div class="converter">
+                    <div class="converter-box">
+                        <div class="form-group">
+                            <label for="amount">Cantidad:</label>
+                            <input type="number" id="amount" class="form-control" value="100" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="from-currency">De:</label>
+                            <select id="from-currency" class="form-control">
+                                <option value="VED">Bolívares (VED)</option>
+                                <option value="USD">Dólares (USD)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="converter-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    
+                    <div class="converter-box">
+                        <div class="form-group">
+                            <label for="converted-amount">Resultado:</label>
+                            <input type="text" id="converted-amount" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="to-currency">A:</label>
+                            <select id="to-currency" class="form-control">
+                                <option value="USD">Dólares (USD)</option>
+                                <option value="VED">Bolívares (VED)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="convert-btn" class="btn">
+                    <i class="fas fa-calculator"></i> Convertir
+                </button>
+                
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="conversion-date">
+                        Usar tasa de fecha específica (opcional): 
+                        <span class="info-tooltip">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="tooltip-text">Seleccione una fecha para usar la tasa de cambio histórica de ese día</span>
+                        </span>
+                    </label>
+                    <input type="date" id="conversion-date" class="form-control">
+                </div>
+                
+                <div id="historical-rate-display" class="historical-rate-display">
+                    <p class="info-label">Tasa utilizada:</p>
+                    <p id="historical-rate-value" class="rate-value">108.1891</p>
+                    <p id="historical-rate-date" class="info-value">30 de junio de 2025</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Histórico -->
+        <section id="history" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Histórico de Tasas</h2>
+            </div>
+            
+            <div class="card">
+                <div class="date-range">
+                    <div class="form-group">
+                        <label for="start-date">Fecha Inicio:</label>
+                        <input type="date" id="start-date" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="end-date">Fecha Fin:</label>
+                        <input type="date" id="end-date" class="form-control">
+                    </div>
+                </div>
+                
+                <button id="search-btn" class="btn">
+                    <i class="fas fa-search"></i> Buscar Tasas
+                </button>
+                
+                <div class="table-responsive">
+                    <table id="history-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha Validez</th>
+                                <th>Fecha Consulta</th>
+                                <th>Tasa (VED/USD)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                            <!-- Datos dinámicos -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="no-data" class="no-data" style="display: none;">
+                    <i class="fas fa-database fa-3x"></i>
+                    <h3>No se encontraron tasas para el período seleccionado</h3>
+                    <p>Intenta con un rango de fechas diferente</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BCV Scrapper</h3>
+                    <p>Aplicación para consultar y convertir tasas de cambio del BCV</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Funcionalidades</h3>
+                    <ul>
+                        <li>Consulta de tasa actual</li>
+                        <li>Conversor de monedas</li>
+                        <li>Histórico de tasas</li>
+                        <li>Búsqueda por rango de fechas</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Fuente de Datos</h3>
+                    <p>Tasas obtenidas del Banco Central de Venezuela (BCV)</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 BCV Scrapper - Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+    <script src="main.js"></script>
+</body>
+</html>
